@@ -1,0 +1,67 @@
+<!doctype html>
+<html>
+    <head>
+        <style>
+            canvas{border:25px solid green;position:absolute;top:1px;left:0px;}
+        </style>
+    </head>
+    <body>
+         <canvas id="lienzo2" width=512 height=512></canvas>
+        <canvas id="lienzo" width=512 height=512></canvas>
+       
+        <input type="color" id="color">
+        <button id="dibujar">Dibujar</button>
+        <button id="borrar">Borrar</button>
+        <input type="range" id="tamanio" min=1 max=20>
+        <script>
+            
+            // Declaración de variables iniciales
+            var operacion = "dibujar"
+            var dibujo = false
+            var tamanio = 1
+            var contexto = document.getElementById("lienzo").getContext("2d")
+            var contexto2 = document.getElementById("lienzo2").getContext("2d")
+            
+            var fondo = new Image()
+            fondo.src = "fondo.png"
+            fondo.onload = function(){
+                contexto2.drawImage(fondo,0,0)
+            }
+            
+            // Declaración de eventos
+            document.getElementById("tamanio").onchange = function(){
+                tamanio = this.value
+            }
+            document.getElementById("dibujar").onclick = function(){
+                operacion = "dibujar"
+            }
+            document.getElementById("borrar").onclick = function(){
+                operacion = "borrar"
+            }
+            document.getElementById("lienzo").onmousedown = function(){
+                dibujo = true
+            }
+            document.getElementById("lienzo").onmouseup = function(){
+                dibujo = false
+            }
+            document.getElementById("color").onchange = function(){
+                contexto.fillStyle = this.value
+            }
+            // Evento de pintura
+            document.getElementById("lienzo").onmousemove = function(e){
+                if(dibujo == true){
+                    if(operacion == "dibujar"){
+                        contexto.fillRect(e.clientX,e.clientY,tamanio,tamanio)
+                        var color = contexto2.getImageData(e.clientX,e.clientY,1,1).data
+                        if(color[3] > 50){
+                            document.getElementById("lienzo").style.border = "25px solid red"
+                        }
+                        }
+                    if(operacion == "borrar"){
+                        contexto.clearRect(e.clientX,e.clientY,tamanio,tamanio)
+                    }
+                }
+            }
+        </script>
+    </body>
+</html>

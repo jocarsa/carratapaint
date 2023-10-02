@@ -1,0 +1,52 @@
+<!doctype html>
+<html>
+    <head>
+        <style>
+            canvas{border:1px solid black;position:absolute;top:0px;left:0px;}
+        </style>
+    </head>
+    <body>
+        <canvas id="lienzo" width=512 height=512></canvas>
+        <canvas id="lienzo2" width=512 height=512></canvas>
+        <script>
+            var contexto = document.getElementById("lienzo").getContext("2d")
+            var contexto2 = document.getElementById("lienzo2").getContext("2d")
+            
+            var fondo = new Image()
+            fondo.src = "terreno.png"
+            fondo.onload = function(){
+                contexto.drawImage(fondo,0,0)
+            }
+            
+            var personajes = []
+            for(var i = 0;i<10;i++){
+                personajes[i] = {"posx":256,"posy":256,"direccion":Math.random()*Math.PI*2}
+            }
+            
+            var temporizador = setTimeout("bucle()",1000)
+            
+            function bucle(){
+                contexto2.clearRect(0,0,512,512)
+                for(var i = 0;i<10;i++){
+                    personajes[i].posx += Math.cos(personajes[i].direccion)
+                    personajes[i].posy += Math.sin(personajes[i].direccion)
+                    // Cojo el color que hay en el contexto 1
+                    color = contexto.getImageData(personajes[i].posx,personajes[i].posy,1,1)
+                    // Si el color de bajo es rojo, pega media vuelta
+                    console.log(color)
+                    if(color.data[0] > 200){personajes[i].direccion += Math.PI}
+                   contexto2.fillRect(
+                       personajes[i].posx,
+                       personajes[i].posy,
+                       5,
+                       5
+                   )
+                }
+                clearTimeout(temporizador)
+                temporizador = setTimeout("bucle()",10)
+                
+            }
+            
+        </script>
+    </body>
+</html>
